@@ -94,11 +94,11 @@ export const downloadIncomeExcel = async (req, res) => {
 
     const sheetData = xlsx.utils.json_to_sheet(data);
     const book = xlsx.utils.book_new();
-    xlsx.utils.book_append_sheet(book, sheetData, "Expense");
+    xlsx.utils.book_append_sheet(book, sheetData, "Income");
     const sheet = xlsx.write(book, { type: "buffer", bookType: "xlsx" });
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=expense-report.xlsx"
+      "attachment; filename=income-report.xlsx"
     );
     res.setHeader(
       "Content-Type",
