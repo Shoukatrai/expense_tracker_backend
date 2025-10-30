@@ -1,3 +1,4 @@
+import redisClient from "../config/redis.js";
 import Income from "../models/Income.js";
 import Tracker from "../models/Tracker.js";
 import * as xlsx from "xlsx";
@@ -21,6 +22,8 @@ export const addIncome = async (req, res) => {
         totalExpense: 0,
         totalIncome: 0 + Number(amount),
       });
+      const key = "/api/v1/income/get"
+      await redisClient.del(key);
       return res.status(201).json({
         message: "Income Added Successfully!",
         status: true,
@@ -49,6 +52,7 @@ export const getAllIncome = async (req, res) => {
     const userId = req.user;
     const income = await Income.find({ userId: userId }).sort({ date: -1 });
     console.log("Income", income);
+    redisClient.setEx(req.originalUrl , 600, JSON.stringify(income));
     res.status(200).json({
       message: "Income GOT Successfully!",
       data: income,
@@ -65,6 +69,8 @@ export const getAllIncome = async (req, res) => {
 export const deleteIncome = async (req, res) => {
   try {
     const income = await Income.findByIdAndDelete(req.params.id);
+    const key = "/api/v1/income/get"
+      await redisClient.del(key);
     res.status(200).json({
       message: "Income Deleted Successfully!",
       data: null,

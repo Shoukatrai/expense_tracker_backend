@@ -7,6 +7,7 @@ import authRoutes from "./routes/authRoutes.js";
 import incomeRoute from "./routes/incomeRoutes.js";
 import expenseRoute from "./routes/expenseRoutes.js";
 import trackerRoute from "./routes/tracker.js";
+import { redisConnect } from "./config/redis.js";
 
 dotenv.config();
 const app = express();
@@ -19,7 +20,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
+redisConnect();
 try {
   await connectDB();
   console.log("DB connected");

@@ -7,11 +7,12 @@ import {
   getAllIncomeByDate,
 } from "../controllers/Income.js";
 import { protect } from "../middleware/authMiddleware.js";
+import { cache } from "../middleware/cache.js";
 
 const router = express.Router();
 
 router.post("/add", protect, addIncome);
-router.get("/get", protect, getAllIncome);
+router.get("/get", protect, cache , getAllIncome);
 router.get("/downloadexcel", protect, downloadIncomeExcel);
 router.get("/:date", protect, getAllIncomeByDate);
 router.delete("/:id", protect, deleteIncome);
