@@ -26,6 +26,7 @@ try {
 } catch (err) {
   console.error("DB connection failed", err.messages);
 }
+app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/income", incomeRoute);
 app.use("/api/v1/expense", expenseRoute);
