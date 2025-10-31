@@ -18,7 +18,7 @@ export const registerUser = async (req, res) => {
   try {
     const { fullName, email, password, profileImageUrl } = req.body;
     if (!fullName || !email || !password) {
-      return res.status(400).json({
+      return res.json({
         status: false,
         data: null,
         message: "All fields are required",
@@ -28,7 +28,7 @@ export const registerUser = async (req, res) => {
     const existingUser = await User.findOne({ email: email });
     console.log("existingUser", existingUser);
     if (existingUser) {
-      return res.status(400).json({
+      return res.json({
         status: false,
         data: null,
         message: "Email already exists!",
@@ -44,14 +44,14 @@ export const registerUser = async (req, res) => {
     res.status(201).json({
       status: true,
       data: user,
-      message: "User created successfully",
+      message: "Signup Successfull!",
       token: generateToken(user._id),
     });
   } catch (error) {
     res.status(500).json({
       status: false,
       data: null,
-      message: "User creating error",
+      message: "Signup error!",
       error: error.message,
     });
   }
@@ -61,7 +61,7 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({
+      return res.json({
         status: false,
         data: null,
         message: "All fields are required",
@@ -71,7 +71,7 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ email: email });
     console.log("user", user);
     if (!user) {
-      return res.status(400).json({
+      return res.json({
         status: false,
         data: null,
         message: "User Not Found!",
@@ -79,7 +79,7 @@ export const loginUser = async (req, res) => {
     }
     const comparePassword = await bcrypt.compare(password, user?.password);
     if (!comparePassword) {
-      return res.status(400).json({
+      return res.json({
         status: false,
         data: null,
         message: "Email or password is incorrect!",
@@ -88,7 +88,7 @@ export const loginUser = async (req, res) => {
     res.status(200).json({
       status: true,
       data: user,
-      message: "Login successfully!",
+      message: "Login successful!",
       token: generateToken(user._id),
     });
   } catch (error) {
