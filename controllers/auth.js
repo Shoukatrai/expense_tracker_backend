@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
+import { emailValidate, validatePassword } from "../utils/emailValidate.js";
 dotenv.config();
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -25,6 +26,23 @@ export const registerUser = async (req, res) => {
       });
     }
 
+    const { valid, message } = emailValidate(email);
+    if (!valid) {
+      return res.json({
+        status: false,
+        data: null,
+        message: message,
+      });
+    }
+
+    const { validPass, messagePass } = validatePassword(password);
+    if (!validPass) {
+      return res.json({
+        status: false,
+        data: null,
+        message: messagePass,
+      });
+    }
     const existingUser = await User.findOne({ email: email });
     console.log("existingUser", existingUser);
     if (existingUser) {
@@ -148,7 +166,7 @@ export const uploadImage = async (req, res) => {
 
     console.log("response", response);
     const user = await User.findById(req.user);
-    console.log("user 150" , user);
+    console.log("user 150", user);
     user.profileImageUrl = response.secure_url;
     user.save();
     res.status(200).json({
