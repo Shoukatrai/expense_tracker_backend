@@ -18,7 +18,7 @@ export const registerUser = async (req, res) => {
   try {
     const { fullName, email, password, profileImageUrl } = req.body;
     if (!fullName || !email || !password) {
-      return res.json({
+      return res.status(400).json({
         status: false,
         data: null,
         message: "All fields are required",
@@ -28,7 +28,7 @@ export const registerUser = async (req, res) => {
     const existingUser = await User.findOne({ email: email });
     console.log("existingUser", existingUser);
     if (existingUser) {
-      return res.json({
+      return res.status(400).json({
         status: false,
         data: null,
         message: "Email already exists!",
@@ -44,7 +44,7 @@ export const registerUser = async (req, res) => {
     res.status(201).json({
       status: true,
       data: user,
-      message: "Signup Successfull!",
+      message: "Signup successfull!",
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -61,7 +61,7 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.json({
+      return res.status(400).json({
         status: false,
         data: null,
         message: "All fields are required",
@@ -71,7 +71,7 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ email: email });
     console.log("user", user);
     if (!user) {
-      return res.json({
+      return res.status(400).json({
         status: false,
         data: null,
         message: "User Not Found!",
@@ -79,7 +79,7 @@ export const loginUser = async (req, res) => {
     }
     const comparePassword = await bcrypt.compare(password, user?.password);
     if (!comparePassword) {
-      return res.json({
+      return res.status(400).json({
         status: false,
         data: null,
         message: "Email or password is incorrect!",
@@ -88,7 +88,7 @@ export const loginUser = async (req, res) => {
     res.status(200).json({
       status: true,
       data: user,
-      message: "Login successful!",
+      message: "Login successfull!",
       token: generateToken(user._id),
     });
   } catch (error) {
